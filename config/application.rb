@@ -20,6 +20,7 @@ require "rails/test_unit/railtie"
 Bundler.require(*Rails.groups)
 
 require_relative '../app/controllers/api/exceptions/bad_request.rb'
+require_relative '../app/services/omdb.rb'
 
 module MovieSearch
   class Application < Rails::Application

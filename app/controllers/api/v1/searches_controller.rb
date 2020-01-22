@@ -3,6 +3,9 @@ class Api::V1::SearchesController < Api::BaseController
 
   def index
     @search = Search.by_query(params[:query])
+    if(@search.new_record?)
+      Services::Omdb.new(@search.tap(&:save)).perform
+    end
 
     render json: @search.as_json
   end

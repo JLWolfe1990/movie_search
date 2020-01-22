@@ -1,16 +1,11 @@
 class Movie < ApplicationRecord
-  belongs_to :search
+  has_and_belongs_to_many :searches, dependent: :destroy
 
-  validates :search, presence: true
-
-  def title
-    search.query.titlecase
-  end
+  validates :title, presence: true
 
   def as_json
     {
-      title: title,
-      description: description
+      title: title.titlecase
     }
   end
 end

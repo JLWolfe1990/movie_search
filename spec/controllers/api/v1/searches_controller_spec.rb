@@ -23,6 +23,34 @@ RSpec.describe Api::V1::SearchesController, type: :controller do
     end
 
     context 'when the query term is valid' do
+      context 'when there is not a cache for the query' do
+        let(:movie_title) { 'Harry Potter and the Prisoner of Askaban' }
+
+        let(:query) { movie_title }
+
+        let(:expected_json) do
+          [
+            {
+              title: movie_title.titlecase
+            }
+          ].as_json
+        end
+
+        let(:search_results) do
+          [{
+            "Title" => movie_title
+          }].as_json
+        end
+
+        it 'should return the movies in the correct JSON format' do
+          expect(Search.count).to eq(0)
+          allow_any_instance_of(Services::Omdb).to receive(:search_results).and_return(search_results)
+
+          subject
+
+          expect(response_json).to eq(expected_json)
+        end
+      end
       context 'when the query term matches a movie' do
         let(:query) { 'Hot Pursuit' }
 
@@ -31,11 +59,15 @@ RSpec.describe Api::V1::SearchesController, type: :controller do
         end
 
         let!(:movie1) do
-          create(:movie, search: search)
+          create(:movie).tap do |movie|
+            search.movies << movie
+          end
         end
 
         let!(:movie2) do
-          create(:movie, search: search)
+          create(:movie).tap do |movie|
+            search.movies << movie
+          end
         end
 
         it 'should return the existing search results' do
@@ -62,11 +94,9 @@ RSpec.describe Api::V1::SearchesController, type: :controller do
           expected_json = [
             {
               title: movie1.title.titlecase,
-              description: movie1.description
             },
             {
               title: movie2.title.titlecase,
-              description: movie2.description
             }
           ].as_json
 
@@ -78,6 +108,10 @@ RSpec.describe Api::V1::SearchesController, type: :controller do
 
       context 'when the query term does not match a movie' do
         let(:query) { 'Not a real movie title' }
+
+        before do
+          allow_any_instance_of(Services::Omdb).to receive(:search_results).and_return([])
+        end
 
         it 'should return an empty array' do
           subject

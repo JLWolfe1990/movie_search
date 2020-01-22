@@ -13,7 +13,6 @@
 # it.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
-require_relative "support/controllers/shared/a_bad_request_shared_spec.rb"
 require_relative "support/controllers/helpers.rb"
 
 RSpec.configure do |config|
