@@ -51,6 +51,31 @@ RSpec.describe Api::V1::SearchesController, type: :controller do
           expect(response_json).to eq(expected_json)
         end
 
+        context 'when the API does not return a successful response' do
+          let(:error_message) { 'Too many results' }
+          before do
+            allow_any_instance_of(Services::Omdb).to receive(:search_results).and_raise(Services::Omdb::Error.new(error_message))
+          end
+
+          it 'should log the message' do
+            expect(Rails.logger).to receive(:error).with("[Api::V1::SearchesController] OMDb threw error 'Too many results'")
+
+            subject
+          end
+
+          it 'should return an empty array' do
+            subject
+
+            expect(response_json).to eq([])
+          end
+
+          it 'should return :not_acceptable' do
+            subject
+
+            expect(response.status).to eq(406)
+          end
+        end
+
         context 'when there is an existing search that is old' do
           let!(:search) do
             create(:search, query: query)

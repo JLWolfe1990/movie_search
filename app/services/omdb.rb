@@ -15,7 +15,10 @@ class Services
     private
 
     def search_results
-      JSON.parse(response.body)["Search"]
+      json = JSON.parse(response.body)
+      raise Error.new(json["Error"]) unless json["Response"] == "True"
+
+      json["Search"]
     end
 
     def response
@@ -29,5 +32,7 @@ class Services
     def params
       { s: @search.query, type: 'movie' }.to_query
     end
+
+    class Error < Exception; end
   end
 end

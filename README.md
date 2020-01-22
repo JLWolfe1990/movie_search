@@ -1,7 +1,8 @@
 ## Up and Running
 
 1) `rails db:create db:migrate`
-2) `rails s`
+2) Copy `.env.example` to `.env` if you want to use the provided keys
+3) `rails s`
 
 ## Example Command
 
