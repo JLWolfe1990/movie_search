@@ -1,24 +1,15 @@
-# README
+## Up and Running
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+`rails db:create db:migrate`
+`rails s`
 
-Things you may want to cover:
+## Example Command
 
-* Ruby version
+`curl -X GET "http://localhost:3000/api/v1/searches" -H 'Content-Type: application/json' -d '{"query": "bob"}'`
 
-* System dependencies
+`curl -X GET "http://localhost:3000/api/v1/searches" -H 'Content-Type: application/json' -d '{"query": "Harry Potter"}'`
 
-* Configuration
+## Notable Design Decisions
 
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+I decided to cache the same requests. This means that the data will get stale eventually. Therefore,
+I decided to time it out every day. That seemed like a reasonable timeframe to reload movie data.

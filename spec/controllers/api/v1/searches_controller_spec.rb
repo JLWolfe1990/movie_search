@@ -50,7 +50,22 @@ RSpec.describe Api::V1::SearchesController, type: :controller do
 
           expect(response_json).to eq(expected_json)
         end
+
+        context 'when there is an existing search that is old' do
+          let!(:search) do
+            create(:search, query: query)
+          end
+
+          before { search.update created_at: 3.days.ago }
+
+          it 'should create a new query' do
+            expect_any_instance_of(Services::Omdb).to receive(:search_results).and_return(search_results)
+
+            expect { subject }.to change(Search, :count).by(1)
+          end
+        end
       end
+
       context 'when the query term matches a movie' do
         let(:query) { 'Hot Pursuit' }
 
