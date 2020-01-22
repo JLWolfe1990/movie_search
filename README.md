@@ -1,13 +1,19 @@
 ## Up and Running
 
-`rails db:create db:migrate`
-`rails s`
+1) `rails db:create db:migrate`
+2) `rails s`
 
 ## Example Command
+
+### Development
 
 `curl -X GET "http://localhost:3000/api/v1/searches" -H 'Content-Type: application/json' -d '{"query": "bob"}'`
 
 `curl -X GET "http://localhost:3000/api/v1/searches" -H 'Content-Type: application/json' -d '{"query": "Harry Potter"}'`
+
+### Production 
+
+`curl -X GET "http://movie-search-jwolfe.herokuapp.com/api/v1/searches" -H 'Content-Type: application/json' -d '{"query": "Harry Potter"}'`
 
 ## Notable Design Decisions
 
